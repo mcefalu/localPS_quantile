@@ -5,6 +5,13 @@
 
 \begin{document}
 
+<<setup, include=FALSE, cache=FALSE>>=
+library(knitr)
+# set global chunk options
+opts_knit$set(root.dir= "../")
+opts_chunk$set(cache.path='cache/', fig.path='figures/', fig.align='center' )
+@
+
 \section{Notation}
 
 Let $C$ be a set of observed covariates, $A$ be an indicator of treatment, and $Y_a$ be the outcome observed under $A=a$. The observed outcome is given by $Y = AY_1 + (1-A)Y_0$. 
@@ -73,11 +80,28 @@ So we have the $\tau^{th}$ quantile effect around $e(C)=\psi$
 \end{align*}
 
 \section{R code example}
-<<my-label, eval=TRUE, dev='png'>>=
-set.seed(1213)  # for reproducibility
-x = cumsum(rnorm(100))
-mean(x)  # mean of x
-plot(x, type = 'l')  # Brownian motion
+
+First, we fit the model and suppress all output. So we don't see anything here!
+
+<<lalonde-fit, eval=TRUE, echo=FALSE, include=FALSE, cache=TRUE >>=
+source("code/examples/lalonde.r")
+print("Comment out")
 @
+
+Next, we run the code to produce the heatmaps!
+<<lalonde-heatmap, eval=TRUE, echo=TRUE , cache=TRUE , dependson="lalonde-fit" >>=
+heatmap.localQ(fit=out , Ytype="quantile" , pch=16 , xlab="PS")
+@
+
+Next, we run the code to produce the mean plot!
+<<lalonde-meanplot, eval=TRUE, echo=TRUE , cache=TRUE , dependson="lalonde-fit" >>=
+plot.Qmean(fit=out , add=F , col='blue' , xlab="PS" , ylab="Effect")
+@
+
+Next, we run the code to produce the quantile plot!
+<<lalonde-Qplot, eval=TRUE, echo=TRUE , cache=TRUE , dependson="lalonde-fit" >>=
+plot.Qavg(fit=out , Ytype="quantile" , type='l' , col='blue' , xlab="quantile of Y(0)" , ylab="Effect")
+@
+
 
 \end{document}

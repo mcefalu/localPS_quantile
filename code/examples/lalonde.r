@@ -17,9 +17,9 @@ h=dpill(x=lalonde$ps, y=lalonde$re78)
 out <- my.localQ(y=lalonde$re78,a=lalonde$treat,ps=lalonde$ps,h=0.1)
 
 # generate plots!
-heatmap.localQ(fit=out , Ytype="quantile" , pch=16 , xlab="PS")
-plot.Qmean(fit=out , add=F , col='blue' , xlab="PS" , ylab="Effect")
-plot.Qavg(fit=out , Ytype="quantile" , type='l' , col='blue' , xlab="quantile of Y(0)" , ylab="Effect")
+#heatmap.localQ(fit=out , Ytype="quantile" , pch=16 , xlab="PS")
+#plot.Qmean(fit=out , add=F , col='blue' , xlab="PS" , ylab="Effect")
+#plot.Qavg(fit=out , Ytype="quantile" , type='l' , col='blue' , xlab="quantile of Y(0)" , ylab="Effect")
 
 
 

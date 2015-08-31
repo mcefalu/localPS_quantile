@@ -1,0 +1,16 @@
+{
+    "contents" : "###########################################\n### code that simulates single dataset  ### \n##\n## Last modification: add comments / clean code\n## Date: 08/28/15\n## By: M Cefalu\n\nrm(list=ls())\nsource(\"code/source/local_ATE_functions.r\")\nsource(\"code/source/simulation_functions.r\")\n\n# generate data\nset.seed(14322)\ndta = gen.dta(n=1000,a=c(-1,1),b=c(0,1),bx.mult=-1,bx.add=1)\n\n# fit the PS model\nm=glm(X~C,family='binomial',data=dta)\ndta$ps=m$fitted\n\n# regression adjustment for PS\nlm(Y~X+ps,data=dta)\n\n# local PS reg and local Q reg\nout <- localPSreg(Y=dta$Y,X=dta$X,ps=dta$ps)\nout <- my.localQ(y=dta$Y,a=dta$X,ps=dta$ps)\n\n# plot estimates of mean, conditional on PS\n# the plot.localPS function is currently broken!\n#plot.localPS(fit=out,CI=T,add=F)\nplot.Qmean(fit=out,add=F,col='blue')\n  \n# plot truth -- the f() function is no longer correct.\n#lines(sort(ps),f(sort(ps),a=a,b=b,bx=bx),col='red')\n\n# my heat map \nheatmap.localQ(fit=out,Ytype=\"quantile\",pch=16,xlab=\"PS\")\n\n## plot effect at each quantiles -- marginalized across PS\nplot.Qavg(fit=out,Ytype=\"observedY0\",type='l',col='blue',xlab=\"Y0\",ylab=\"Effect\")\n\n",
+    "created" : 1440786153449.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "1312888837",
+    "id" : "B390862F",
+    "lastKnownWriteTime" : 1440786014,
+    "path" : "~/Documents/Research/Methods/Causal Inference/LoWePS/code/simulations/single_simulation_example.r",
+    "project_path" : "code/simulations/single_simulation_example.r",
+    "properties" : {
+    },
+    "source_on_save" : false,
+    "type" : "r_source"
+}

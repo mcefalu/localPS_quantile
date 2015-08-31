@@ -54,6 +54,8 @@
 \IfFileExists{upquote.sty}{\usepackage{upquote}}{}
 \begin{document}
 
+
+
 \section{Notation}
 
 Let $C$ be a set of observed covariates, $A$ be an indicator of treatment, and $Y_a$ be the outcome observed under $A=a$. The observed outcome is given by $Y = AY_1 + (1-A)Y_0$. 
@@ -122,22 +124,58 @@ So we have the $\tau^{th}$ quantile effect around $e(C)=\psi$
 \end{align*}
 
 \section{R code example}
+
+First, we fit the model and suppress all output. So we don't see anything here!
+
+
+
+Next, we run the code to produce the heatmaps!
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{set.seed}\hlstd{(}\hlnum{1213}\hlstd{)}  \hlcom{# for reproducibility}
-\hlstd{x} \hlkwb{=} \hlkwd{cumsum}\hlstd{(}\hlkwd{rnorm}\hlstd{(}\hlnum{100}\hlstd{))}
-\hlkwd{mean}\hlstd{(x)}  \hlcom{# mean of x}
-\end{alltt}
-\begin{verbatim}
-## [1] -1.939758
-\end{verbatim}
-\begin{alltt}
-\hlkwd{plot}\hlstd{(x,} \hlkwc{type} \hlstd{=} \hlstr{'l'}\hlstd{)}  \hlcom{# Brownian motion}
+\hlkwd{heatmap.localQ}\hlstd{(}\hlkwc{fit}\hlstd{=out ,} \hlkwc{Ytype}\hlstd{=}\hlstr{"quantile"} \hlstd{,} \hlkwc{pch}\hlstd{=}\hlnum{16} \hlstd{,} \hlkwc{xlab}\hlstd{=}\hlstr{"PS"}\hlstd{)}
 \end{alltt}
 \end{kframe}
-\includegraphics[width=\maxwidth]{figure/my-label-1} 
+
+{\centering \includegraphics[width=\maxwidth]{figures/lalonde-heatmap-1} 
+
+}
+
+
 
 \end{knitrout}
+
+Next, we run the code to produce the mean plot!
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{plot.Qmean}\hlstd{(}\hlkwc{fit}\hlstd{=out ,} \hlkwc{add}\hlstd{=F ,} \hlkwc{col}\hlstd{=}\hlstr{'blue'} \hlstd{,} \hlkwc{xlab}\hlstd{=}\hlstr{"PS"} \hlstd{,} \hlkwc{ylab}\hlstd{=}\hlstr{"Effect"}\hlstd{)}
+\end{alltt}
+\end{kframe}
+
+{\centering \includegraphics[width=\maxwidth]{figures/lalonde-meanplot-1} 
+
+}
+
+
+
+\end{knitrout}
+
+Next, we run the code to produce the quantile plot!
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{plot.Qavg}\hlstd{(}\hlkwc{fit}\hlstd{=out ,} \hlkwc{Ytype}\hlstd{=}\hlstr{"quantile"} \hlstd{,} \hlkwc{type}\hlstd{=}\hlstr{'l'} \hlstd{,} \hlkwc{col}\hlstd{=}\hlstr{'blue'} \hlstd{,} \hlkwc{xlab}\hlstd{=}\hlstr{"quantile of Y(0)"} \hlstd{,} \hlkwc{ylab}\hlstd{=}\hlstr{"Effect"}\hlstd{)}
+\end{alltt}
+\end{kframe}
+
+{\centering \includegraphics[width=\maxwidth]{figures/lalonde-Qplot-1} 
+
+}
+
+
+
+\end{knitrout}
+
 
 \end{document}

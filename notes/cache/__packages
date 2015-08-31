@@ -1,0 +1,16 @@
+base
+knitr
+SparseM
+quantreg
+lattice
+survival
+Formula
+ggplot2
+Hmisc
+KernSmooth
+survey
+gbm
+xtable
+RColorBrewer
+latticeExtra
+twang
