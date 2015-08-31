@@ -1,0 +1,143 @@
+\documentclass{article}\usepackage[]{graphicx}\usepackage[]{color}
+%% maxwidth is the original width if it is less than linewidth
+%% otherwise use linewidth (to make sure the graphics do not exceed the margin)
+\makeatletter
+\def\maxwidth{ %
+  \ifdim\Gin@nat@width>\linewidth
+    \linewidth
+  \else
+    \Gin@nat@width
+  \fi
+}
+\makeatother
+
+\definecolor{fgcolor}{rgb}{0.345, 0.345, 0.345}
+\newcommand{\hlnum}[1]{\textcolor[rgb]{0.686,0.059,0.569}{#1}}%
+\newcommand{\hlstr}[1]{\textcolor[rgb]{0.192,0.494,0.8}{#1}}%
+\newcommand{\hlcom}[1]{\textcolor[rgb]{0.678,0.584,0.686}{\textit{#1}}}%
+\newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hlstd}[1]{\textcolor[rgb]{0.345,0.345,0.345}{#1}}%
+\newcommand{\hlkwa}[1]{\textcolor[rgb]{0.161,0.373,0.58}{\textbf{#1}}}%
+\newcommand{\hlkwb}[1]{\textcolor[rgb]{0.69,0.353,0.396}{#1}}%
+\newcommand{\hlkwc}[1]{\textcolor[rgb]{0.333,0.667,0.333}{#1}}%
+\newcommand{\hlkwd}[1]{\textcolor[rgb]{0.737,0.353,0.396}{\textbf{#1}}}%
+
+\usepackage{framed}
+\makeatletter
+\newenvironment{kframe}{%
+ \def\at@end@of@kframe{}%
+ \ifinner\ifhmode%
+  \def\at@end@of@kframe{\end{minipage}}%
+  \begin{minipage}{\columnwidth}%
+ \fi\fi%
+ \def\FrameCommand##1{\hskip\@totalleftmargin \hskip-\fboxsep
+ \colorbox{shadecolor}{##1}\hskip-\fboxsep
+     % There is no \\@totalrightmargin, so:
+     \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
+ \MakeFramed {\advance\hsize-\width
+   \@totalleftmargin\z@ \linewidth\hsize
+   \@setminipage}}%
+ {\par\unskip\endMakeFramed%
+ \at@end@of@kframe}
+\makeatother
+
+\definecolor{shadecolor}{rgb}{.97, .97, .97}
+\definecolor{messagecolor}{rgb}{0, 0, 0}
+\definecolor{warningcolor}{rgb}{1, 0, 1}
+\definecolor{errorcolor}{rgb}{1, 0, 0}
+\newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
+
+\usepackage{alltt}
+\usepackage{amsmath}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\def\betahat{{\widehat\beta}}
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\begin{document}
+
+\section{Notation}
+
+Let $C$ be a set of observed covariates, $A$ be an indicator of treatment, and $Y_a$ be the outcome observed under $A=a$. The observed outcome is given by $Y = AY_1 + (1-A)Y_0$. 
+
+We are interested in comparing features of the marginal distributions of the potential outcomes. Let $f_{Y_a}$ denote the marginal distribution of potential outcome $Y_a$ (with CDF given by $F_{Y_a}$). We are interested in features of these distributions, which we will either describe through the quantiles or the mean. 
+
+\begin{align*}
+  E(Y_a) &= \int y f_{Y_a}(y) \partial y \\
+  Q_{Y_a}(\tau) &= F^{-1}_{Y_a}(\tau)
+\end{align*}
+
+Examples of comparisons are the average causal effect (ATE), $E(Y_1-Y_0)$, the median causal effect, $Q_{Y_1}(0.5)-Q_{Y_0}(0.5)$, and more generally, the $p^{th}$ quantile causal effect, $Q_{Y_1}(p)-Q_{Y_0}(p)$.
+
+A few notes. First, the expected value is the integral of the quantile function:
+
+\begin{align*}
+  E(Y_a) &= \int_0^1 Q_{Y_a}(p) \partial p
+\end{align*}
+
+\noindent Second, if we view the quantile causal effect as a function, then we can consider estimating the quantile effect for all $p$:
+
+\begin{align*}
+  QE(p) &= Q_{Y_1}(p)-Q_{Y_0}(p)
+\end{align*}
+
+\noindent Finally, combining the first two notes, we get:
+
+\begin{align*}
+  ATE &= E(Y_1-Y_0) = \int_0^1 QE(p) \partial p
+\end{align*}
+
+\section{Main assumptions}
+
+The primary assumption will be strong ignorability, 
+
+\begin{align*}
+  (Y_1,Y_0) \bot A | C
+\end{align*}
+
+\noindent Based on Rubin, we know that this implies 
+
+\begin{align*}
+  (Y_1,Y_0) \bot A | e(C)
+\end{align*}
+
+\noindent where $e(C)=P(A=1|C)$ is known as the propensity score. The implication of strong ignorability is that the potential outcomes are independent of the treatment assignment conditional on the propensity score. That is, conditional on the propensity score, we can ignore the treatment assignment mechanism when describing features of the potential outcomes. In most applications of causal inference, we focus on the ATE. However, strong ignorability makes a statement about the entire distribution of the potential outcomes, so that we can make comparisons between any feature of the potential outcomes of interest (e.g. quantiles). 
+
+We will also need SUTVA. No big deal.
+
+\section{Local quantile regression}
+
+We will use local quantile regression to estimate $QE(p)$ around a given value of the propensity score. In other words, we will estimate the conditional quantile effect $QE(p|e(C)=\psi)$ using local quantile regression, where locality is based on the propensity score.
+
+For a given value of the propensity score $\psi$, we seek to minimize
+
+\begin{align*}
+  \sum_i w_i \rho_\tau( Y_i - f(X_i))
+\end{align*}
+
+where $w_i$ is a weight and $\rho_\tau(u)=u(\tau-I(u<0))$. We choose the weight based on a kernel function, $K(.)$, and the bandwidth, $h$. Specifically, $w_i=K( \frac{\psi-e(C_i)}{h})$. Since the kernel function weights more heavily the observations that have propensity score close to $\psi$, we are estimating a local (in the PS) quantile effect. I'm sure we could somehow modify strong ignorability to explicity take into account the localness of the procedure. 
+
+So we have the $\tau^{th}$ quantile effect around $e(C)=\psi$
+
+\begin{align*}
+  \betahat_\tau(\psi) = \widehat{QE}(p|e(C)=\psi) = \argmin_\beta \sum_i K( \frac{\psi-e(C_i)}{h}) \rho_\tau( Y_i - \beta_0 - \beta_1 A_i)
+\end{align*}
+
+\section{R code example}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{set.seed}\hlstd{(}\hlnum{1213}\hlstd{)}  \hlcom{# for reproducibility}
+\hlstd{x} \hlkwb{=} \hlkwd{cumsum}\hlstd{(}\hlkwd{rnorm}\hlstd{(}\hlnum{100}\hlstd{))}
+\hlkwd{mean}\hlstd{(x)}  \hlcom{# mean of x}
+\end{alltt}
+\begin{verbatim}
+## [1] -1.939758
+\end{verbatim}
+\begin{alltt}
+\hlkwd{plot}\hlstd{(x,} \hlkwc{type} \hlstd{=} \hlstr{'l'}\hlstd{)}  \hlcom{# Brownian motion}
+\end{alltt}
+\end{kframe}
+\includegraphics[width=\maxwidth]{figure/my-label-1} 
+
+\end{knitrout}
+
+\end{document}
