@@ -1,8 +1,9 @@
 ############################
 ###    LoWePS functions  ### 
 ##
-## Last modification: add comments / clean code
-## Date: 08/28/15
+## Last modification: moved calculations for figures into my.localQ
+##                    This allows us to not save the quantile regression fits.
+## Date: 09/04/15
 ## By: M Cefalu
 
 ###############################
@@ -29,7 +30,11 @@ my.localQ <- function(y,a,ps,m=100,h=0.1){
   #h = diff(range(grid))/h
   
   # out holds the quantile regression fits for each point in the PS grid
-  out = list()
+  # out = list()
+  delta.mean = NULL
+  q.heatmap = qY0.heatmap = qY1.heatmap = NULL
+  delta.heatmap = NULL
+  ps.heatmap = NULL
   for (i in 1:m){
     # weights
     K = dnorm( (ps-grid[i])/h )
@@ -40,10 +45,30 @@ my.localQ <- function(y,a,ps,m=100,h=0.1){
     ## fit weighted quantile regression ##
     # tau is the quantile to be estimated
     # tau>1 estimates solution for all values of tau in (0,1)
-    out[[i]] = rq(y~a,tau=3 , weights=K)
+    out = rq(y~a,tau=3 , weights=K)
+    
+    ###############################
+    ## add estimates of the mean ##
+    # the mean is just the integral of the quantile function
+    # for each PS, the quantile function is a step function
+    # so we just add up the estimates, weighting by the width between quantile points
+    delta.mean = c(delta.mean,sum(diff(out$sol["tau",])*out$sol["a",-ncol(out$sol)]))
+    
+    ##########################################
+    ## extract quantiles for use in heatmap ##
+    q.heatmap = c(q.heatmap,out$sol["tau",])
+    temp = wtd.quantile(y[a==1],probs=out$sol["tau",],weights=K[a==1])
+    qY1.heatmap = c(qY1.heatmap,temp)
+    temp = wtd.quantile(y[a==0],probs=out$sol["tau",],weights=K[a==0])
+    qY0.heatmap = c(qY0.heatmap,temp)
+  
+    #######################################
+    # add estimates and PS to the output ##
+    delta.heatmap = c(delta.heatmap,out$sol["a",])
+    ps.heatmap = c(ps.heatmap,rep(grid[i],length(out$sol["a",])))
   }
   # return the fits, the PS grid, the bandwidth, the outcomes , and the treatments
-  return(list(out=out,ps=grid,h=h,y=y,a=a))
+  return(list(ps=grid,h=h,y=y,a=a,q.heatmap=q.heatmap,qY0.heatmap=qY0.heatmap,qY1.heatmap=qY1.heatmap,ps.heatmap=ps.heatmap,delta.heatmap=delta.heatmap,delta.mean=delta.mean))
 }
 
 
@@ -53,26 +78,15 @@ my.localQ <- function(y,a,ps,m=100,h=0.1){
 ### plot mean as a function of PS based ###
 ### on local quantile regressions       ###
 ##
-## out is "out" from my.localQ
+## fit is "out" from my.localQ
 ## add option adds plot to previous plot
 ## everything else is passed through to plot
 
 plot.Qmean <- function(fit,add=F,...){
-  # delta saves estiamtes of the mean
-  delta = NULL
-  # loop over grid of PS used in my.localQ
-  for (i in 1:length(fit$out)){
-    # add estimates of the mean
-    # the mean is just the integral of the quantile function
-    # for each PS, the quantile function is a step function
-    # so we just add up the estimates, weighting by the width between quantile points
-    delta = c(delta,sum(diff(fit$out[[i]]$sol["tau",])*fit$out[[i]]$sol["a",-ncol(fit$out[[i]]$sol)]))
-  }
-  # now plot
   if (add){
-    lines(y=delta,x=fit$ps,...)
+    lines(y=fit$delta.mean,x=fit$ps,...)
   }else{
-    plot(y=delta,x=fit$ps,type='l',...)
+    plot(y=fit$delta.mean,x=fit$ps,type='l',...)
   }
 }
 
@@ -85,44 +99,18 @@ plot.Qmean <- function(fit,add=F,...){
 ## fit is "out" from my.localQ
 ## Ytype defines how we plot the x-axis.
 
-plot.Qavg <- function(fit,Ytype="observedY0",...){
-  # set outcome and treatment
-  Y=fit$y
-  X=fit$a
-  # delta will hold effect estimates
-  delta = NULL
-  # q are the quantiles of Y(0) or Y(1), or just the quantile itself
-  q = NULL
-  # x is the propensity score
-  x = NULL
-  N = length(Y)
-  
-  # loop over the grid of propensity scores used in my.localQ
-  for (i in 1:length(fit$out)){
-    # weights used for the i-th quantile reg
-    K = fit$out[[i]]$weights
-    # check ytype -- it changes what we save in q
-    if (Ytype=="observedY1"){
-      temp = wtd.quantile(Y[X==1],probs=fit$out[[i]]$sol["tau",],weights=K[X==1])
-      q = c(q,temp)
-    }
-    if (Ytype=="observedY0"){
-      temp = wtd.quantile(Y[X==0],probs=fit$out[[i]]$sol["tau",],weights=K[X==0])
-      q = c(q,temp)
-    }
-    if (Ytype=="observedY"){
-      temp = wtd.quantile(Y,probs=fit$out[[i]]$sol["tau",],weights=K)
-      q = c(q,temp)
-    }
-    if (Ytype=="quantile"){
-      q = c(q,fit$out[[i]]$sol["tau",])
-    }
-    # add estimates and PS to the output
-    delta = c(delta,fit$out[[i]]$sol["a",])
-    x = c(x,rep(fit$ps[i],length(fit$out[[i]]$sol["a",])))
-  }
+plot.Qavg <- function(fit,Ytype="quantile",...){
   # might need to weight this based on observed PS dist?
-  qs=tapply(delta,round(q,2),mean)
+  if (Ytype=="observedY1"){
+    q = fit$qY1.heatmap
+  }
+  if (Ytype=="observedY0"){
+    q = fit$qY0.heatmap
+  }
+  if (Ytype=="quantile"){
+    q = fit$q.heatmap
+  }
+  qs=tapply(fit$delta.heatmap,round(q,2),mean)
   plot(x=rownames(qs),y=qs,...)
 }
 
@@ -136,54 +124,19 @@ plot.Qavg <- function(fit,Ytype="observedY0",...){
 ## fit is "out" from my.local Q
 ## Ytype defines how we plot the y-axis.
 
-heatmap.localQ <- function(fit,Ytype="observedY0",...){
-  # set outcome and treatment
-  Y=fit$y
-  X=fit$a
-  # check that ytype is valid
-  if ( !(Ytype%in%c("observedY1","observedY0","observedY","quantile")) ){
-    print("Invalid Ytype")
-    return(NULL)
+heatmap.localQ <- function(fit,Ytype="quantile",...){
+  if (Ytype=="observedY1"){
+    q = fit$qY1.heatmap
   }
-  # effect estimates
-  delta = NULL
-  # quantiles of Y0
-  q = NULL
-  # propensity scores
-  x = NULL
-  N = length(Y)
-  # this code is the same as from plot.Qavg
-  for (i in 1:length(fit$out)){
-    # weights used for the i-th quantile reg
-    K = fit$out[[i]]$weights
-    # check ytype -- it changes what we save in q
-    if (Ytype=="observedY1"){
-      temp = wtd.quantile(Y[X==1],probs=fit$out[[i]]$sol["tau",],weights=K[X==1])
-      q = c(q,temp)
-      ylab="Y1"
-    }
-    if (Ytype=="observedY0"){
-      temp = wtd.quantile(Y[X==0],probs=fit$out[[i]]$sol["tau",],weights=K[X==0])
-      q = c(q,temp)
-      ylab = "Y0"
-    }
-    if (Ytype=="observedY"){
-      temp = wtd.quantile(Y,probs=fit$out[[i]]$sol["tau",],weights=K)
-      q = c(q,temp)
-      ylab = "Y"
-    }
-    if (Ytype=="quantile"){
-      q = c(q,fit$out[[i]]$sol["tau",])
-      ylab = "quantile of Y(0)"
-    }
-    # add estimates and PS to the output
-    delta = c(delta,fit$out[[i]]$sol["a",])
-    x = c(x,rep(fit$ps[i],length(fit$out[[i]]$sol["a",])))
+  if (Ytype=="observedY0"){
+    q = fit$qY0.heatmap
   }
-  # plot! 
+  if (Ytype=="quantile"){
+    q = fit$q.heatmap
+  }
   index = q<Inf
-  col = heat.clr(delta[index])
-  plot(x=x[index],y=q[index],col=col,ylab=ylab,...)
+  col = heat.clr(fit$delta.heatmap[index])
+  plot(x=fit$ps.heatmap[index],y=q[index],col=col,...)
 }
 
 

@@ -104,4 +104,30 @@ plot.Qavg(fit=out , Ytype="quantile" , type='l' , col='blue' , xlab="quantile of
 @
 
 
+\section{Substance abuse example from Beth Ann}
+
+<<chestnut-fit, eval=TRUE, echo=FALSE, include=FALSE, cache=TRUE >>=
+load("data/results/chesnut_results.Rdata")
+print("Comment out")
+@
+
+\subsection{SFS}
+<<SFS-heatmap, eval=TRUE, echo=TRUE , cache=TRUE , dependson="chestnut-fit" >>=
+heatmap.localQ(fit=out.sfs , Ytype="quantile" , pch=16 , xlab="PS")
+@
+\subsection{SPS}
+<<SPS-heatmap, eval=TRUE, echo=TRUE , cache=TRUE , dependson="chestnut-fit" >>=
+heatmap.localQ(fit=out.sps , Ytype="quantile" , pch=16 , xlab="PS")
+@
+\subsection{EPS}
+<<EPS-heatmap, eval=TRUE, echo=TRUE , cache=TRUE , dependson="chestnut-fit" >>=
+heatmap.localQ(fit=out.eps , Ytype="quantile" , pch=16 , xlab="PS")
+@
+\subsection{SDS}
+<<SDS-heatmap, eval=TRUE, echo=TRUE , cache=TRUE , dependson="chestnut-fit" >>=
+heatmap.localQ(fit=out.sds , Ytype="quantile" , pch=16 , xlab="PS")
+@
+
 \end{document}
+
+
