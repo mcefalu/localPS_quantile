@@ -59,7 +59,9 @@ The primary assumption will be strong ignorability,
 
 \noindent where $e(C)=P(A=1|C)$ is known as the propensity score. The implication of strong ignorability is that the potential outcomes are independent of the treatment assignment conditional on the propensity score. That is, conditional on the propensity score, we can ignore the treatment assignment mechanism when describing features of the potential outcomes. In most applications of causal inference, we focus on the ATE. However, strong ignorability makes a statement about the entire distribution of the potential outcomes, so that we can make comparisons between any feature of the potential outcomes of interest (e.g. quantiles). 
 
-We will also need SUTVA. No big deal.
+There is stuff out there about local ignorability, or something like that. I've seen it in the context of regression discontinuity designs. Probably should have a look. 
+
+We will also need SUTVA. No big deal. 
 
 \section{Local quantile regression}
 
@@ -76,8 +78,27 @@ where $w_i$ is a weight and $\rho_\tau(u)=u(\tau-I(u<0))$. We choose the weight 
 So we have the $\tau^{th}$ quantile effect around $e(C)=\psi$
 
 \begin{align*}
-  \betahat_\tau(\psi) = \widehat{QE}(p|e(C)=\psi) = \argmin_\beta \sum_i K( \frac{\psi-e(C_i)}{h}) \rho_\tau( Y_i - \beta_0 - \beta_1 A_i)
+  \betahat_\tau(\psi) = \widehat{QE}(p|e(C)=\psi) = \argmin_\beta \sum_i K\left( \frac{\psi-e(C_i)}{h}\right) \rho_\tau( Y_i - \beta_0 - \beta_1 A_i)
 \end{align*}
+
+\subsection{Estimating conditional ATE}
+
+Let the conditional ATE be given by $ \beta(\psi) = E(Y_1-Y_0|e(C)=\psi)$. Using relationship between the quantiles and mean above, we can estimate the conditional ATE as:
+
+\begin{align*}
+   \betahat(\psi) &= \int_0^1 \betahat_\tau(\psi) \partial \tau
+\end{align*}
+
+\subsection{Estimating marginal quantile effects}
+
+Let the marginal quantile be given by $ \beta_\tau = \int_0^1 QE(p|e(C)=\psi) f_{e(C)}(\psi) \partial \psi$. Note that our implementation creates a grid over the PS....so the integral will be a sum over our grid points:
+
+\begin{align*}
+   \betahat_\tau &=  \int_0^1 \betahat_\tau(\psi) \widehat{f}_{e(C)}(\psi) \partial \psi \\
+   \widehat{f}_{e(C)}(x) &= \frac{1}{nh} \sum_{i=1}^n K\left( \frac{x-e(C_i)}{h}\right)
+\end{align*}
+
+
 
 \section{R code example}
 
