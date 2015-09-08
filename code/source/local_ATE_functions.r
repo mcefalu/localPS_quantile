@@ -1,9 +1,12 @@
 ############################
 ###    LoWePS functions  ### 
 ##
-## Last modification: moved calculations for figures into my.localQ
-##                    This allows us to not save the quantile regression fits.
-## Date: 09/04/15
+## Recent modifications: Add necessary calculations so that the marginal
+##                       quantile function is correctly calculated.
+##
+##                       Moved calculations for figures into my.localQ
+##                       This allows us to not save the quantile regression fits.
+## Date: 09/08/15
 ## By: M Cefalu
 
 ###############################
@@ -23,23 +26,30 @@ library(survey)
 ## ps is propensity score
 ## m is number of points on a grid for the PS
 
-my.localQ <- function(y,a,ps,m=100,h=0.1){
+my.localQ <- function(y,a,ps,m=100,m.q=1000,h=0.1){
   # sequence of PS from min to max PS with length m
   grid <- seq(min(ps),max(ps),length=m)
+  # grid of quantiles for collapsing results 
+  q.grid = seq(0,1,length=m.q)
+  n <- length(ps)
+  
   # bandwidth -- currently specified by user
   #h = diff(range(grid))/h
   
-  # out holds the quantile regression fits for each point in the PS grid
-  # out = list()
+  # some null vectors
   delta.mean = NULL
   q.heatmap = qY0.heatmap = qY1.heatmap = NULL
   delta.heatmap = NULL
+  delta.q = matrix(NA,m.q,m)
   ps.heatmap = NULL
+  K.ps <- numeric(m)
   for (i in 1:m){
     # weights
     K = dnorm( (ps-grid[i])/h )
-    # exploratory: zero some weights out
+    # exploratory: zero some weights out and standardize
     K[ K < dnorm(1) ] = 0 
+    K <- K / (1-2*dnorm(-1))
+    K.ps[i] = sum(K)/n/h/m
     
     ######################################
     ## fit weighted quantile regression ##
@@ -61,6 +71,12 @@ my.localQ <- function(y,a,ps,m=100,h=0.1){
     qY1.heatmap = c(qY1.heatmap,temp)
     temp = wtd.quantile(y[a==0],probs=out$sol["tau",],weights=K[a==0])
     qY0.heatmap = c(qY0.heatmap,temp)
+    
+    ############################################
+    ## add estimates of the marginal quantile ##
+    # delta.q has the quantiles in the rows
+    # !!!!!!!!!!!!!!! I DONT THINK THIS IS DOING WHAT I WANT
+    delta.q[,i] = out$sol["a",findInterval(q.grid,out$sol["tau",])]
   
     #######################################
     # add estimates and PS to the output ##
@@ -68,7 +84,7 @@ my.localQ <- function(y,a,ps,m=100,h=0.1){
     ps.heatmap = c(ps.heatmap,rep(grid[i],length(out$sol["a",])))
   }
   # return the fits, the PS grid, the bandwidth, the outcomes , and the treatments
-  return(list(ps=grid,h=h,y=y,a=a,q.heatmap=q.heatmap,qY0.heatmap=qY0.heatmap,qY1.heatmap=qY1.heatmap,ps.heatmap=ps.heatmap,delta.heatmap=delta.heatmap,delta.mean=delta.mean))
+  return(list(ps=grid,q=q.grid,K.ps=K.ps,h=h,y=y,a=a,q.heatmap=q.heatmap,qY0.heatmap=qY0.heatmap,qY1.heatmap=qY1.heatmap,ps.heatmap=ps.heatmap,delta.heatmap=delta.heatmap,delta.mean=delta.mean,delta.q=delta.q))
 }
 
 
@@ -100,18 +116,22 @@ plot.Qmean <- function(fit,add=F,...){
 ## Ytype defines how we plot the x-axis.
 
 plot.Qavg <- function(fit,Ytype="quantile",...){
-  # might need to weight this based on observed PS dist?
-  if (Ytype=="observedY1"){
-    q = fit$qY1.heatmap
-  }
-  if (Ytype=="observedY0"){
-    q = fit$qY0.heatmap
-  }
-  if (Ytype=="quantile"){
-    q = fit$q.heatmap
-  }
-  qs=tapply(fit$delta.heatmap,round(q,2),mean)
-  plot(x=rownames(qs),y=qs,...)
+  # i updated this to weight based on PS dist
+  # but my implementation makes plotting the actual
+  # Ys difficult
+  
+  #   if (Ytype=="observedY1"){
+  #     q = fit$qY1.heatmap
+  #   }
+  #   if (Ytype=="observedY0"){
+  #     q = fit$qY0.heatmap
+  #   }
+  #   if (Ytype=="quantile"){
+  #     q = fit$q.heatmap
+  #   }
+  qs=fit$delta.q%*%fit$K.ps
+  #tapply(fit$delta.heatmap,round(q,2),sum)
+  plot(y=(qs),x=fit$q,...)
 }
 
 

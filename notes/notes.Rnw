@@ -106,7 +106,7 @@ First, we fit the model and suppress all output. So we don't see anything here!
 
 <<lalonde-fit, eval=TRUE, echo=FALSE, include=FALSE, cache=TRUE >>=
 source("code/examples/lalonde.r")
-print("Comment out")
+#print("Comment out")
 @
 
 Next, we run the code to produce the heatmaps!
@@ -135,18 +135,26 @@ print("Comment out")
 \subsection{SFS}
 <<SFS-heatmap, eval=TRUE, echo=TRUE , cache=TRUE , dependson="chestnut-fit" >>=
 heatmap.localQ(fit=out.sfs , Ytype="quantile" , pch=16 , xlab="PS")
+plot.Qmean(fit=out.sfs , add=F , col='blue' , xlab="PS" , ylab="Effect")
+plot.Qavg(fit=out.sfs  , type='l' , col='blue' , xlab="quantile of Y(0)" , ylab="Effect")
 @
 \subsection{SPS}
 <<SPS-heatmap, eval=TRUE, echo=TRUE , cache=TRUE , dependson="chestnut-fit" >>=
 heatmap.localQ(fit=out.sps , Ytype="quantile" , pch=16 , xlab="PS")
+plot.Qmean(fit=out.sps , add=F , col='blue' , xlab="PS" , ylab="Effect")
+plot.Qavg(fit=out.sps  , type='l' , col='blue' , xlab="quantile of Y(0)" , ylab="Effect")
 @
 \subsection{EPS}
 <<EPS-heatmap, eval=TRUE, echo=TRUE , cache=TRUE , dependson="chestnut-fit" >>=
 heatmap.localQ(fit=out.eps , Ytype="quantile" , pch=16 , xlab="PS")
+plot.Qmean(fit=out.eps , add=F , col='blue' , xlab="PS" , ylab="Effect")
+plot.Qavg(fit=out.eps  , type='l' , col='blue' , xlab="quantile of Y(0)" , ylab="Effect")
 @
 \subsection{SDS}
 <<SDS-heatmap, eval=TRUE, echo=TRUE , cache=TRUE , dependson="chestnut-fit" >>=
 heatmap.localQ(fit=out.sds , Ytype="quantile" , pch=16 , xlab="PS")
+plot.Qmean(fit=out.sds , add=F , col='blue' , xlab="PS" , ylab="Effect")
+plot.Qavg(fit=out.sds  , type='l' , col='blue' , xlab="quantile of Y(0)" , ylab="Effect")
 @
 
 \end{document}
