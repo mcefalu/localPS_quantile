@@ -6,14 +6,15 @@ library(twang)
 dta=read.csv("data/raw/data_from_BA.csv")
 
 # fit PS model using GBM
-ps1 <- ps(atm ~ age + female + female + race4g + sfs + sps + sds + ias + ces + eps + imds + bcs + prmhtx,
+dta$race4g = as.factor(dta$race4g)
+ps1 <- ps(atm ~ age + female + race4g + sfs + sps + sds + ias + ces + eps + imds + bcs + prmhtx,
           data = dta,
           n.trees = 5000,
           interaction.depth = 3,
           shrinkage = 0.01,
           perm.test.iters = 0,
           stop.method = c("es.max"),
-          estimand = "ATE",
+          estimand = "ATT",
           sampw = NULL,
           verbose = FALSE
 )
@@ -33,7 +34,7 @@ dta$ps = ps1$ps[,1]
 
 # fit LoWePS-QR
 # h=dpill(x=lalonde$ps, y=lalonde$re78)
-out.sfs <- my.localQ(y=dta$sfs8p12,a=dta$atm,ps=dta$ps,h=0.1)
+out.sfs <- my.localQ(y=dta$sfs8p12,a=dta$atm,ps=dta$ps,h=0.1,boot=F,K.boot=10)
 out.sps <- my.localQ(y=dta$spsm12,a=dta$atm,ps=dta$ps,h=0.1)
 out.eps <- my.localQ(y=dta$eps7p12,a=dta$atm,ps=dta$ps,h=0.1)
 out.sds <- my.localQ(y=dta$sdsm12,a=dta$atm,ps=dta$ps,h=0.1)

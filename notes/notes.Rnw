@@ -28,19 +28,19 @@ Examples of comparisons are the average causal effect (ATE), $E(Y_1-Y_0)$, the m
 A few notes. First, the expected value is the integral of the quantile function:
 
 \begin{align*}
-  E(Y_a) &= \int_0^1 Q_{Y_a}(p) \partial p
+  E(Y_a) &= \int_0^1 Q_{Y_a}(\tau) \partial \tau
 \end{align*}
 
 \noindent Second, if we view the quantile causal effect as a function, then we can consider estimating the quantile effect for all $p$:
 
 \begin{align*}
-  QE(p) &= Q_{Y_1}(p)-Q_{Y_0}(p)
+  QE(\tau) &= Q_{Y_1}(\tau)-Q_{Y_0}(\tau)
 \end{align*}
 
-\noindent Finally, combining the first two notes, we get:
+\noindent Finally, combining the first two notes, we get that the ATE is simply the quantile effect integrated over $\tau$:
 
 \begin{align*}
-  ATE &= E(Y_1-Y_0) = \int_0^1 QE(p) \partial p
+  ATE &= E(Y_1-Y_0) = \int_0^1 QE(\tau) \partial \tau
 \end{align*}
 
 \section{Main assumptions}
@@ -81,23 +81,46 @@ So we have the $\tau^{th}$ quantile effect around $e(C)=\psi$
   \betahat_\tau(\psi) = \widehat{QE}(p|e(C)=\psi) = \argmin_\beta \sum_i K\left( \frac{\psi-e(C_i)}{h}\right) \rho_\tau( Y_i - \beta_0 - \beta_1 A_i)
 \end{align*}
 
-\subsection{Estimating conditional ATE}
+I'll also note that it is possible to do smoothing the the quantile direction using similar weights. The goal there would be to borrow information across quantiles to increase the smoothness of the effects as a function of the quantile. Implementation would probably be much more challenging.
 
-Let the conditional ATE be given by $ \beta(\psi) = E(Y_1-Y_0|e(C)=\psi)$. Using relationship between the quantiles and mean above, we can estimate the conditional ATE as:
+\subsection{Conditional ATE}
+
+Let the conditional ATE be given by $ \beta(\psi) = E(Y_1-Y_0|e(C)=\psi)$. Using relationship between the quantiles and mean above, we can write the conditional ATE as:
+
+\begin{align*}
+   \beta(\psi) &= \int_0^1 \beta_\tau(\psi) \partial \tau
+\end{align*}
+
+Since we are estimating $\beta_\tau(\psi)$, we can easily estimate $\beta(\psi)$:
 
 \begin{align*}
    \betahat(\psi) &= \int_0^1 \betahat_\tau(\psi) \partial \tau
 \end{align*}
 
+\subsection{ATE, ATT, or any other marginal effect of interest}
+
+Let the ATE be given by $\beta = E(Y_1-Y_0)$. By integrating the conditional ATE over the propensity score distribution, we can write $\beta$ as:
+
+\begin{align*}
+   \beta &= \int_0^1 \beta(\psi) f_{e(C)}(\psi) \partial \psi
+\end{align*}
+
+which provides the readily available estimate:
+
+\begin{align*}
+   \widehat{\beta} &= \int_0^1 \betahat(\psi) \widehat{f}_{e(C)}(\psi) \partial \psi
+\end{align*}
+
+ATT, or any other marginal effect, can be estimated by replacing the distribution $f_{e(C)}$ that we are marginalizing over with the appropriate distribution. 
+
 \subsection{Estimating marginal quantile effects}
 
-Let the marginal quantile be given by $ \beta_\tau = \int_0^1 QE(p|e(C)=\psi) f_{e(C)}(\psi) \partial \psi$. Note that our implementation creates a grid over the PS....so the integral will be a sum over our grid points:
+This is wrong. Let the marginal quantile be given by $ \beta_\tau = \int_0^1 QE(p|e(C)=\psi) f_{e(C)}(\psi) \partial \psi$. 
 
 \begin{align*}
    \betahat_\tau &=  \int_0^1 \betahat_\tau(\psi) \widehat{f}_{e(C)}(\psi) \partial \psi \\
    \widehat{f}_{e(C)}(x) &= \frac{1}{nh} \sum_{i=1}^n K\left( \frac{x-e(C_i)}{h}\right)
 \end{align*}
-
 
 
 \section{R code example}
@@ -129,32 +152,32 @@ plot.Qavg(fit=out , Ytype="quantile" , type='l' , col='blue' , xlab="quantile of
 
 <<chestnut-fit, eval=TRUE, echo=FALSE, include=FALSE, cache=TRUE >>=
 load("data/results/chesnut_results.Rdata")
-print("Comment out")
+#print("Comment out")
 @
 
 \subsection{SFS}
 <<SFS-heatmap, eval=TRUE, echo=TRUE , cache=TRUE , dependson="chestnut-fit" >>=
 heatmap.localQ(fit=out.sfs , Ytype="quantile" , pch=16 , xlab="PS")
-plot.Qmean(fit=out.sfs , add=F , col='blue' , xlab="PS" , ylab="Effect")
+plot.Qmean(fit=out.sfs , add=F , col='blue' , xlab="PS" , ylab="Effect" , boot=T)
 plot.Qavg(fit=out.sfs  , type='l' , col='blue' , xlab="quantile of Y(0)" , ylab="Effect")
 @
 \subsection{SPS}
 <<SPS-heatmap, eval=TRUE, echo=TRUE , cache=TRUE , dependson="chestnut-fit" >>=
-heatmap.localQ(fit=out.sps , Ytype="quantile" , pch=16 , xlab="PS")
-plot.Qmean(fit=out.sps , add=F , col='blue' , xlab="PS" , ylab="Effect")
-plot.Qavg(fit=out.sps  , type='l' , col='blue' , xlab="quantile of Y(0)" , ylab="Effect")
+#heatmap.localQ(fit=out.sps , Ytype="quantile" , pch=16 , xlab="PS")
+#plot.Qmean(fit=out.sps , add=F , col='blue' , xlab="PS" , ylab="Effect")
+#plot.Qavg(fit=out.sps  , type='l' , col='blue' , xlab="quantile of Y(0)" , ylab="Effect")
 @
 \subsection{EPS}
 <<EPS-heatmap, eval=TRUE, echo=TRUE , cache=TRUE , dependson="chestnut-fit" >>=
-heatmap.localQ(fit=out.eps , Ytype="quantile" , pch=16 , xlab="PS")
-plot.Qmean(fit=out.eps , add=F , col='blue' , xlab="PS" , ylab="Effect")
-plot.Qavg(fit=out.eps  , type='l' , col='blue' , xlab="quantile of Y(0)" , ylab="Effect")
+#heatmap.localQ(fit=out.eps , Ytype="quantile" , pch=16 , xlab="PS")
+#plot.Qmean(fit=out.eps , add=F , col='blue' , xlab="PS" , ylab="Effect")
+#plot.Qavg(fit=out.eps  , type='l' , col='blue' , xlab="quantile of Y(0)" , ylab="Effect")
 @
 \subsection{SDS}
 <<SDS-heatmap, eval=TRUE, echo=TRUE , cache=TRUE , dependson="chestnut-fit" >>=
-heatmap.localQ(fit=out.sds , Ytype="quantile" , pch=16 , xlab="PS")
-plot.Qmean(fit=out.sds , add=F , col='blue' , xlab="PS" , ylab="Effect")
-plot.Qavg(fit=out.sds  , type='l' , col='blue' , xlab="quantile of Y(0)" , ylab="Effect")
+#heatmap.localQ(fit=out.sds , Ytype="quantile" , pch=16 , xlab="PS")
+#plot.Qmean(fit=out.sds , add=F , col='blue' , xlab="PS" , ylab="Effect")
+#plot.Qavg(fit=out.sds  , type='l' , col='blue' , xlab="quantile of Y(0)" , ylab="Effect")
 @
 
 \end{document}

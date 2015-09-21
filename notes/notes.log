@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2014) (preloaded format=pdflatex 2014.5.25)  8 SEP 2015 13:41
+This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2014) (preloaded format=pdflatex 2014.5.25)  21 SEP 2015 15:42
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -215,19 +215,19 @@ e
 
 {/usr/local/texlive/2014/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
 [2]
-Package color Info: Redefining color shadecolor on input line 155.
+Package color Info: Redefining color shadecolor on input line 178.
 LaTeX Font Info:    Font shape `OT1/cmtt/bx/n' in size <10> not available
-(Font)              Font shape `OT1/cmtt/m/n' tried instead on input line 157.
+(Font)              Font shape `OT1/cmtt/m/n' tried instead on input line 180.
  <figures/lalonde-heatmap-1.pdf, id=19, 505.89pt x 505.89pt>
 File: figures/lalonde-heatmap-1.pdf Graphic file (type pdf)
 
 <use figures/lalonde-heatmap-1.pdf>
-Package pdftex.def Info: figures/lalonde-heatmap-1.pdf used on input line 161.
+Package pdftex.def Info: figures/lalonde-heatmap-1.pdf used on input line 184.
 (pdftex.def)             Requested size: 345.0pt x 345.00414pt.
  [3]
-Package color Info: Redefining color shadecolor on input line 171.
+Package color Info: Redefining color shadecolor on input line 194.
 
-Overfull \hbox (11.99689pt too wide) in paragraph at lines 173--173
+Overfull \hbox (11.99689pt too wide) in paragraph at lines 196--196
 [][]\OT1/cmtt/m/n/10 plot.Qmean[][]([][]fit[][]=out ,[] []add[][]=F ,[] []col[]
 []=[][]^^Mblue^^M[] [],[] []xlab[][]=[][]"PS"[] [],[] []ylab[][]=[][]"Effect"[]
 [])[][] 
@@ -237,13 +237,13 @@ Overfull \hbox (11.99689pt too wide) in paragraph at lines 173--173
 File: figures/lalonde-meanplot-1.pdf Graphic file (type pdf)
 
 <use figures/lalonde-meanplot-1.pdf>
-Package pdftex.def Info: figures/lalonde-meanplot-1.pdf used on input line 177.
+Package pdftex.def Info: figures/lalonde-meanplot-1.pdf used on input line 200.
 
 (pdftex.def)             Requested size: 345.0pt x 345.00414pt.
  [4 <./figures/lalonde-heatmap-1.pdf>]
-Package color Info: Redefining color shadecolor on input line 187.
+Package color Info: Redefining color shadecolor on input line 210.
 
-Overfull \hbox (195.74529pt too wide) in paragraph at lines 189--189
+Overfull \hbox (195.74529pt too wide) in paragraph at lines 212--212
 [][]\OT1/cmtt/m/n/10 plot.Qavg[][]([][]fit[][]=out ,[] []Ytype[][]=[][]"quantil
 e"[] [],[] []type[][]=[][]^^Ml^^M[] [],[] []col[][]=[][]^^Mblue^^M[] [],[] []xl
 ab[][]=[][]"quantile of Y(0)"[] [],[] []ylab[][]=[][]"Effect"[][])[][] 
@@ -253,12 +253,12 @@ ab[][]=[][]"quantile of Y(0)"[] [],[] []ylab[][]=[][]"Effect"[][])[][]
 File: figures/lalonde-Qplot-1.pdf Graphic file (type pdf)
 
 <use figures/lalonde-Qplot-1.pdf>
-Package pdftex.def Info: figures/lalonde-Qplot-1.pdf used on input line 193.
+Package pdftex.def Info: figures/lalonde-Qplot-1.pdf used on input line 216.
 (pdftex.def)             Requested size: 345.0pt x 345.00414pt.
  [5 <./figures/lalonde-meanplot-1.pdf>]
-Package color Info: Redefining color shadecolor on input line 208.
+Package color Info: Redefining color shadecolor on input line 231.
 
-Overfull \hbox (6.74693pt too wide) in paragraph at lines 210--210
+Overfull \hbox (6.74693pt too wide) in paragraph at lines 233--233
 [][]\OT1/cmtt/m/n/10 heatmap.localQ[][]([][]fit[][]=out.sfs ,[] []Ytype[][]=[][
 ]"quantile"[] [],[] []pch[][]=[][]16[] [],[] []xlab[][]=[][]"PS"[][])[][] 
  []
@@ -267,23 +267,23 @@ Overfull \hbox (6.74693pt too wide) in paragraph at lines 210--210
 File: figures/SFS-heatmap-1.pdf Graphic file (type pdf)
 
 <use figures/SFS-heatmap-1.pdf>
-Package pdftex.def Info: figures/SFS-heatmap-1.pdf used on input line 214.
+Package pdftex.def Info: figures/SFS-heatmap-1.pdf used on input line 237.
 (pdftex.def)             Requested size: 345.0pt x 345.00414pt.
  [6 <./figures/lalonde-Qplot-1.pdf>]
-Overfull \hbox (32.9967pt too wide) in paragraph at lines 220--220
+Overfull \hbox (80.24629pt too wide) in paragraph at lines 243--243
 [][]\OT1/cmtt/m/n/10 plot.Qmean[][]([][]fit[][]=out.sfs ,[] []add[][]=F ,[] []c
 ol[][]=[][]^^Mblue^^M[] [],[] []xlab[][]=[][]"PS"[] [],[] []ylab[][]=[][]"Effec
-t"[][])[][] 
+t"[] [],[] []boot[][]=T)[][] 
  []
 
 <figures/SFS-heatmap-2.pdf, id=51, 505.89pt x 505.89pt>
 File: figures/SFS-heatmap-2.pdf Graphic file (type pdf)
 
 <use figures/SFS-heatmap-2.pdf>
-Package pdftex.def Info: figures/SFS-heatmap-2.pdf used on input line 224.
+Package pdftex.def Info: figures/SFS-heatmap-2.pdf used on input line 247.
 (pdftex.def)             Requested size: 345.0pt x 345.00414pt.
  [7 <./figures/SFS-heatmap-1.pdf>]
-Overfull \hbox (122.24593pt too wide) in paragraph at lines 230--230
+Overfull \hbox (122.24593pt too wide) in paragraph at lines 253--253
 [][]\OT1/cmtt/m/n/10 plot.Qavg[][]([][]fit[][]=out.sfs  ,[] []type[][]=[][]^^Ml
 ^^M[] [],[] []col[][]=[][]^^Mblue^^M[] [],[] []xlab[][]=[][]"quantile of Y(0)"[
 ] [],[] []ylab[][]=[][]"Effect"[][])[][] 
@@ -293,153 +293,92 @@ Overfull \hbox (122.24593pt too wide) in paragraph at lines 230--230
 File: figures/SFS-heatmap-3.pdf Graphic file (type pdf)
 
 <use figures/SFS-heatmap-3.pdf>
-Package pdftex.def Info: figures/SFS-heatmap-3.pdf used on input line 234.
+Package pdftex.def Info: figures/SFS-heatmap-3.pdf used on input line 257.
 (pdftex.def)             Requested size: 345.0pt x 345.00414pt.
  [8 <./figures/SFS-heatmap-2.pdf>]
-Package color Info: Redefining color shadecolor on input line 243.
+Package color Info: Redefining color shadecolor on input line 266.
 
-Overfull \hbox (6.74693pt too wide) in paragraph at lines 245--245
-[][]\OT1/cmtt/m/n/10 heatmap.localQ[][]([][]fit[][]=out.sps ,[] []Ytype[][]=[][
-]"quantile"[] [],[] []pch[][]=[][]16[] [],[] []xlab[][]=[][]"PS"[][])[][] 
+Overfull \hbox (13.733pt too wide) in paragraph at lines 268--268
+[][]\OT1/cmtt/m/it/10 #heatmap.localQ(fit=out.sps , Ytype="quantile" , pch=16 ,
+ xlab="PS")[][] 
  []
 
-<figures/SPS-heatmap-1.pdf, id=70, 505.89pt x 505.89pt>
-File: figures/SPS-heatmap-1.pdf Graphic file (type pdf)
 
-<use figures/SPS-heatmap-1.pdf>
-Package pdftex.def Info: figures/SPS-heatmap-1.pdf used on input line 249.
-(pdftex.def)             Requested size: 345.0pt x 345.00414pt.
- [9 <./figures/SFS-heatmap-3.pdf>]
-Overfull \hbox (32.9967pt too wide) in paragraph at lines 255--255
-[][]\OT1/cmtt/m/n/10 plot.Qmean[][]([][]fit[][]=out.sps ,[] []add[][]=F ,[] []c
-ol[][]=[][]^^Mblue^^M[] [],[] []xlab[][]=[][]"PS"[] [],[] []ylab[][]=[][]"Effec
-t"[][])[][] 
+Overfull \hbox (39.98277pt too wide) in paragraph at lines 269--269
+[][]\OT1/cmtt/m/it/10 #plot.Qmean(fit=out.sps , add=F , col=^^Mblue^^M , xlab="
+PS" , ylab="Effect")[][] 
  []
 
-<figures/SPS-heatmap-2.pdf, id=79, 505.89pt x 505.89pt>
-File: figures/SPS-heatmap-2.pdf Graphic file (type pdf)
 
-<use figures/SPS-heatmap-2.pdf>
-Package pdftex.def Info: figures/SPS-heatmap-2.pdf used on input line 259.
-(pdftex.def)             Requested size: 345.0pt x 345.00414pt.
- [10 <./figures/SPS-heatmap-1.pdf>]
-Overfull \hbox (122.24593pt too wide) in paragraph at lines 265--265
-[][]\OT1/cmtt/m/n/10 plot.Qavg[][]([][]fit[][]=out.sps  ,[] []type[][]=[][]^^Ml
-^^M[] [],[] []col[][]=[][]^^Mblue^^M[] [],[] []xlab[][]=[][]"quantile of Y(0)"[
-] [],[] []ylab[][]=[][]"Effect"[][])[][] 
+Overfull \hbox (129.232pt too wide) in paragraph at lines 270--270
+[][]\OT1/cmtt/m/it/10 #plot.Qavg(fit=out.sps  , type=^^Ml^^M , col=^^Mblue^^M ,
+ xlab="quantile of Y(0)" , ylab="Effect")[][] 
  []
 
-<figures/SPS-heatmap-3.pdf, id=88, 505.89pt x 505.89pt>
-File: figures/SPS-heatmap-3.pdf Graphic file (type pdf)
+Package color Info: Redefining color shadecolor on input line 276.
 
-<use figures/SPS-heatmap-3.pdf>
-Package pdftex.def Info: figures/SPS-heatmap-3.pdf used on input line 269.
-(pdftex.def)             Requested size: 345.0pt x 345.00414pt.
- [11 <./figures/SPS-heatmap-2.pdf>]
-Package color Info: Redefining color shadecolor on input line 278.
-
-Overfull \hbox (6.74693pt too wide) in paragraph at lines 280--280
-[][]\OT1/cmtt/m/n/10 heatmap.localQ[][]([][]fit[][]=out.eps ,[] []Ytype[][]=[][
-]"quantile"[] [],[] []pch[][]=[][]16[] [],[] []xlab[][]=[][]"PS"[][])[][] 
+Overfull \hbox (13.733pt too wide) in paragraph at lines 278--278
+[][]\OT1/cmtt/m/it/10 #heatmap.localQ(fit=out.eps , Ytype="quantile" , pch=16 ,
+ xlab="PS")[][] 
  []
 
-<figures/EPS-heatmap-1.pdf, id=97, 505.89pt x 505.89pt>
-File: figures/EPS-heatmap-1.pdf Graphic file (type pdf)
 
-<use figures/EPS-heatmap-1.pdf>
-Package pdftex.def Info: figures/EPS-heatmap-1.pdf used on input line 284.
-(pdftex.def)             Requested size: 345.0pt x 345.00414pt.
- [12 <./figures/SPS-heatmap-3.pdf>]
-Overfull \hbox (32.9967pt too wide) in paragraph at lines 290--290
-[][]\OT1/cmtt/m/n/10 plot.Qmean[][]([][]fit[][]=out.eps ,[] []add[][]=F ,[] []c
-ol[][]=[][]^^Mblue^^M[] [],[] []xlab[][]=[][]"PS"[] [],[] []ylab[][]=[][]"Effec
-t"[][])[][] 
+Overfull \hbox (39.98277pt too wide) in paragraph at lines 279--279
+[][]\OT1/cmtt/m/it/10 #plot.Qmean(fit=out.eps , add=F , col=^^Mblue^^M , xlab="
+PS" , ylab="Effect")[][] 
  []
 
-<figures/EPS-heatmap-2.pdf, id=106, 505.89pt x 505.89pt>
-File: figures/EPS-heatmap-2.pdf Graphic file (type pdf)
 
-<use figures/EPS-heatmap-2.pdf>
-Package pdftex.def Info: figures/EPS-heatmap-2.pdf used on input line 294.
-(pdftex.def)             Requested size: 345.0pt x 345.00414pt.
- [13 <./figures/EPS-heatmap-1.pdf>]
-Overfull \hbox (122.24593pt too wide) in paragraph at lines 300--300
-[][]\OT1/cmtt/m/n/10 plot.Qavg[][]([][]fit[][]=out.eps  ,[] []type[][]=[][]^^Ml
-^^M[] [],[] []col[][]=[][]^^Mblue^^M[] [],[] []xlab[][]=[][]"quantile of Y(0)"[
-] [],[] []ylab[][]=[][]"Effect"[][])[][] 
+Overfull \hbox (129.232pt too wide) in paragraph at lines 280--280
+[][]\OT1/cmtt/m/it/10 #plot.Qavg(fit=out.eps  , type=^^Ml^^M , col=^^Mblue^^M ,
+ xlab="quantile of Y(0)" , ylab="Effect")[][] 
  []
 
-<figures/EPS-heatmap-3.pdf, id=116, 505.89pt x 505.89pt>
-File: figures/EPS-heatmap-3.pdf Graphic file (type pdf)
-
-<use figures/EPS-heatmap-3.pdf>
-Package pdftex.def Info: figures/EPS-heatmap-3.pdf used on input line 304.
-(pdftex.def)             Requested size: 345.0pt x 345.00414pt.
- [14 <./figures/EPS-heatmap-2.pdf>]
-Package color Info: Redefining color shadecolor on input line 313.
-
-Overfull \hbox (6.74693pt too wide) in paragraph at lines 315--315
-[][]\OT1/cmtt/m/n/10 heatmap.localQ[][]([][]fit[][]=out.sds ,[] []Ytype[][]=[][
-]"quantile"[] [],[] []pch[][]=[][]16[] [],[] []xlab[][]=[][]"PS"[][])[][] 
+Package color Info: Redefining color shadecolor on input line 286.
+[9 <./figures/SFS-heatmap-3.pdf>]
+Overfull \hbox (13.733pt too wide) in paragraph at lines 288--288
+[][]\OT1/cmtt/m/it/10 #heatmap.localQ(fit=out.sds , Ytype="quantile" , pch=16 ,
+ xlab="PS")[][] 
  []
 
-<figures/SDS-heatmap-1.pdf, id=125, 505.89pt x 505.89pt>
-File: figures/SDS-heatmap-1.pdf Graphic file (type pdf)
 
-<use figures/SDS-heatmap-1.pdf>
-Package pdftex.def Info: figures/SDS-heatmap-1.pdf used on input line 319.
-(pdftex.def)             Requested size: 345.0pt x 345.00414pt.
- [15 <./figures/EPS-heatmap-3.pdf>]
-Overfull \hbox (32.9967pt too wide) in paragraph at lines 325--325
-[][]\OT1/cmtt/m/n/10 plot.Qmean[][]([][]fit[][]=out.sds ,[] []add[][]=F ,[] []c
-ol[][]=[][]^^Mblue^^M[] [],[] []xlab[][]=[][]"PS"[] [],[] []ylab[][]=[][]"Effec
-t"[][])[][] 
+Overfull \hbox (39.98277pt too wide) in paragraph at lines 289--289
+[][]\OT1/cmtt/m/it/10 #plot.Qmean(fit=out.sds , add=F , col=^^Mblue^^M , xlab="
+PS" , ylab="Effect")[][] 
  []
 
-<figures/SDS-heatmap-2.pdf, id=134, 505.89pt x 505.89pt>
-File: figures/SDS-heatmap-2.pdf Graphic file (type pdf)
 
-<use figures/SDS-heatmap-2.pdf>
-Package pdftex.def Info: figures/SDS-heatmap-2.pdf used on input line 329.
-(pdftex.def)             Requested size: 345.0pt x 345.00414pt.
- [16 <./figures/SDS-heatmap-1.pdf>]
-Overfull \hbox (122.24593pt too wide) in paragraph at lines 335--335
-[][]\OT1/cmtt/m/n/10 plot.Qavg[][]([][]fit[][]=out.sds  ,[] []type[][]=[][]^^Ml
-^^M[] [],[] []col[][]=[][]^^Mblue^^M[] [],[] []xlab[][]=[][]"quantile of Y(0)"[
-] [],[] []ylab[][]=[][]"Effect"[][])[][] 
+Overfull \hbox (129.232pt too wide) in paragraph at lines 290--290
+[][]\OT1/cmtt/m/it/10 #plot.Qavg(fit=out.sds  , type=^^Ml^^M , col=^^Mblue^^M ,
+ xlab="quantile of Y(0)" , ylab="Effect")[][] 
  []
 
-<figures/SDS-heatmap-3.pdf, id=143, 505.89pt x 505.89pt>
-File: figures/SDS-heatmap-3.pdf Graphic file (type pdf)
-
-<use figures/SDS-heatmap-3.pdf>
-Package pdftex.def Info: figures/SDS-heatmap-3.pdf used on input line 339.
-(pdftex.def)             Requested size: 345.0pt x 345.00414pt.
- [17 <./figures/SDS-heatmap-2.pdf>] [18 <./figures/SDS-heatmap-3.pdf>] (./notes
-.aux) ) 
+[10] (./notes.aux) ) 
 Here is how much of TeX's memory you used:
- 2288 strings out of 493117
- 32280 string characters out of 6135433
- 96446 words of memory out of 5000000
- 5720 multiletter control sequences out of 15000+600000
- 5472 words of font info for 21 fonts, out of 8000000 for 9000
+ 2245 strings out of 493117
+ 31079 string characters out of 6135433
+ 95446 words of memory out of 5000000
+ 5685 multiletter control sequences out of 15000+600000
+ 5640 words of font info for 22 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  38i,9n,23p,651b,245s stack positions out of 5000i,500n,10000p,200000b,80000s
-</usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx1
-2.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10
-.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.
-pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pf
-b></usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb>
-</usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></
-usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmr5.pfb></usr
-/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/lo
-cal/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/loc
-al/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/local
-/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb>
-Output written on notes.pdf (18 pages, 11400089 bytes).
+</usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsf
+onts/cm/cmbx12.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfo
+nts/cm/cmex10.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfon
+ts/cm/cmitt10.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfon
+ts/cm/cmmi10.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfont
+s/cm/cmmi5.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/
+cm/cmmi7.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm
+/cmr10.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/c
+mr5.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7
+.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.
+pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pf
+b></usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb
+>
+Output written on notes.pdf (10 pages, 8408610 bytes).
 PDF statistics:
- 197 PDF objects out of 1000 (max. 8388607)
- 134 compressed objects within 2 object streams
+ 121 PDF objects out of 1000 (max. 8388607)
+ 84 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
- 76 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 31 words of extra memory for PDF output out of 10000 (max. 10000000)
 

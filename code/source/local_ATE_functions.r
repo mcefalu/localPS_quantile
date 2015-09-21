@@ -26,9 +26,11 @@ library(survey)
 ## ps is propensity score
 ## m is number of points on a grid for the PS
 
-my.localQ <- function(y,a,ps,m=100,m.q=1000,h=0.1){
+my.localQ <- function(y,a,ps,m=100,m.q=1000,h=0.1,boot=F,K.boot=100){
   # sequence of PS from min to max PS with length m
-  grid <- seq(min(ps),max(ps),length=m)
+  min.ps = max(min(ps[a==1])-h/2,0,min(ps[a==0]))
+  max.ps = min(max(ps[a==0])+h/2,1,max(ps[a==1]))
+  grid <- seq(min.ps,max.ps,length=m)
   # grid of quantiles for collapsing results 
   q.grid = seq(0,1,length=m.q)
   n <- length(ps)
@@ -83,10 +85,24 @@ my.localQ <- function(y,a,ps,m=100,m.q=1000,h=0.1){
     delta.heatmap = c(delta.heatmap,out$sol["a",])
     ps.heatmap = c(ps.heatmap,rep(grid[i],length(out$sol["a",])))
   }
+  delta.mean.ub = delta.mean.lb = delta.mean.se = NULL
+  if (boot){
+    delta.mean.boot = matrix(NA,K.boot,m)
+    message(paste("Performing",K.boot,"bootstraps:"))
+    pb <- txtProgressBar(min=1,max=K.boot,style=3,char="=",width=50)
+    for (i in 1:K.boot){
+      setTxtProgressBar(pb, i)
+      index = sample(n , n , replace=T)
+      out = my.localQ(y=y[index],a=a[index],ps=ps[index],m=m,h=h)
+      delta.mean.boot[i,] = out$delta.mean
+    }
+    delta.mean.lb = apply(delta.mean.boot,2,quantile,0.025)
+    delta.mean.ub = apply(delta.mean.boot,2,quantile,0.975)
+    delta.mean.se = apply(delta.mean.boot,2,sd)
+  }
   # return the fits, the PS grid, the bandwidth, the outcomes , and the treatments
-  return(list(ps=grid,q=q.grid,K.ps=K.ps,h=h,y=y,a=a,q.heatmap=q.heatmap,qY0.heatmap=qY0.heatmap,qY1.heatmap=qY1.heatmap,ps.heatmap=ps.heatmap,delta.heatmap=delta.heatmap,delta.mean=delta.mean,delta.q=delta.q))
+  return(list(ps=grid,q=q.grid,K.ps=K.ps,h=h,y=y,a=a,q.heatmap=q.heatmap,qY0.heatmap=qY0.heatmap,qY1.heatmap=qY1.heatmap,ps.heatmap=ps.heatmap,delta.heatmap=delta.heatmap,delta.mean=delta.mean,delta.mean.ub=delta.mean.ub,delta.mean.lb=delta.mean.lb,delta.mean.se=delta.mean.se,delta.q=delta.q))
 }
-
 
 
 
@@ -98,11 +114,17 @@ my.localQ <- function(y,a,ps,m=100,m.q=1000,h=0.1){
 ## add option adds plot to previous plot
 ## everything else is passed through to plot
 
-plot.Qmean <- function(fit,add=F,...){
-  if (add){
-    lines(y=fit$delta.mean,x=fit$ps,...)
+plot.Qmean <- function(fit,add=F,boot=F,...){
+  if (!boot){
+    if (add){
+      lines(y=fit$delta.mean,x=fit$ps,...)
+    }else{
+      plot(y=fit$delta.mean,x=fit$ps,type='l',...)
+    }
   }else{
-    plot(y=fit$delta.mean,x=fit$ps,type='l',...)
+    plot(fit$delta.mean,x=fit$ps,type='l',ylim=c(min(fit$delta.mean.lb),max(fit$delta.mean.ub)),...)
+    lines(y=fit$delta.mean.lb,x=fit$ps,lty='dashed',...)
+    lines(y=fit$delta.mean.ub,x=fit$ps,lty='dashed',...)
   }
 }
 
@@ -255,3 +277,26 @@ plot.localPS <- function(out,CI=F,add=F,...){
     }
   }
 }
+
+
+
+################################
+### bootstrap for my.localQ ###
+##
+## y is outcome
+## a is treatment
+## ps is propensity score
+## m is number of points on a grid for the PS
+
+boot.localPSreg <- function(K=100,y,a,ps,m=100,h=0.1){
+    delta.mean = matrix(NA,K,m)
+    n = length(y)
+    for (i in 1:K){
+      index = sample(n , n , replace=T)
+      out = my.localQ(y=y[index],a=a[index],ps=ps[index],m=m,h=h)
+      delta.mean[i,] = out$delta.mean
+    }
+    ps.grid = out$ps
+    return(list(delta=delta.mean,ps=ps.grid))
+}
+    
