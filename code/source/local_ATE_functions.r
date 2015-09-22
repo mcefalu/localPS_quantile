@@ -27,13 +27,25 @@ library(survey)
 ## m is number of points on a grid for the PS
 
 my.localQ <- function(y,a,ps,m=100,m.q=1000,h=0.1,boot=F,K.boot=100){
-  # sequence of PS from min to max PS with length m
-  min.ps = max(min(ps[a==1])-h/2,0,min(ps[a==0]))
-  max.ps = min(max(ps[a==0])+h/2,1,max(ps[a==1]))
-  grid <- seq(min.ps,max.ps,length=m)
+  if (is.numeric(m)){
+    # sequence of PS from min to max PS with length m
+    min.ps = max(min(ps[a==1])-h/2,0,min(ps[a==0]))
+    max.ps = min(max(ps[a==0])+h/2,1,max(ps[a==1]))
+    grid <- seq(min.ps,max.ps,length=m)
+    index.ps <- 1:m
+  }else{
+    # use observed PS instead
+    min.ps = max(min(ps[a==1])-h/2,0,min(ps[a==0]))
+    max.ps = min(max(ps[a==0])+h/2,1,max(ps[a==1]))
+    index.ps = which((ps<=max.ps) & (ps>=min.ps))
+    grid <- ps[index.ps]
+    m <- length(grid)
+  }
   # grid of quantiles for collapsing results 
   q.grid = seq(0,1,length=m.q)
   n <- length(ps)
+  n0 <- sum(1-a)
+  n1 <- sum(a)
   
   # bandwidth -- currently specified by user
   #h = diff(range(grid))/h
@@ -44,46 +56,48 @@ my.localQ <- function(y,a,ps,m=100,m.q=1000,h=0.1,boot=F,K.boot=100){
   delta.heatmap = NULL
   delta.q = matrix(NA,m.q,m)
   ps.heatmap = NULL
-  K.ps <- numeric(m)
+  K.ps <- K.ps1 <- K.ps0 <- numeric(m)
   for (i in 1:m){
-    # weights
-    K = dnorm( (ps-grid[i])/h )
-    # exploratory: zero some weights out and standardize
-    K[ K < dnorm(1) ] = 0 
-    K <- K / (1-2*dnorm(-1))
-    K.ps[i] = sum(K)/n/h/m
+      # weights
+      K = dnorm( (ps-grid[i])/h )
+      # exploratory: zero some weights out and standardize
+      K[ K < dnorm(1) ] = 0 
+      K <- K / (1-2*dnorm(-1))
+      K.ps[i] = sum(K)/n/h/m
+      K.ps0[i] = sum(K[a==0])/n0/h/m
+      K.ps1[i] = sum(K[a==1])/n1/h/m
+      
+      ######################################
+      ## fit weighted quantile regression ##
+      # tau is the quantile to be estimated
+      # tau>1 estimates solution for all values of tau in (0,1)
+      out = rq(y~a,tau=3 , weights=K)
+      
+      ###############################
+      ## add estimates of the mean ##
+      # the mean is just the integral of the quantile function
+      # for each PS, the quantile function is a step function
+      # so we just add up the estimates, weighting by the width between quantile points
+      delta.mean = c(delta.mean,sum(diff(out$sol["tau",])*out$sol["a",-ncol(out$sol)]))
+      
+      ##########################################
+      ## extract quantiles for use in heatmap ##
+      q.heatmap = c(q.heatmap,out$sol["tau",])
+      temp = wtd.quantile(y[a==1],probs=out$sol["tau",],weights=K[a==1])
+      qY1.heatmap = c(qY1.heatmap,temp)
+      temp = wtd.quantile(y[a==0],probs=out$sol["tau",],weights=K[a==0])
+      qY0.heatmap = c(qY0.heatmap,temp)
+      
+      ############################################
+      ## add estimates of the marginal quantile ##
+      # delta.q has the quantiles in the rows
+      # !!!!!!!!!!!!!!! I DONT THINK THIS IS DOING WHAT I WANT
+      delta.q[,i] = out$sol["a",findInterval(q.grid,out$sol["tau",])]
     
-    ######################################
-    ## fit weighted quantile regression ##
-    # tau is the quantile to be estimated
-    # tau>1 estimates solution for all values of tau in (0,1)
-    out = rq(y~a,tau=3 , weights=K)
-    
-    ###############################
-    ## add estimates of the mean ##
-    # the mean is just the integral of the quantile function
-    # for each PS, the quantile function is a step function
-    # so we just add up the estimates, weighting by the width between quantile points
-    delta.mean = c(delta.mean,sum(diff(out$sol["tau",])*out$sol["a",-ncol(out$sol)]))
-    
-    ##########################################
-    ## extract quantiles for use in heatmap ##
-    q.heatmap = c(q.heatmap,out$sol["tau",])
-    temp = wtd.quantile(y[a==1],probs=out$sol["tau",],weights=K[a==1])
-    qY1.heatmap = c(qY1.heatmap,temp)
-    temp = wtd.quantile(y[a==0],probs=out$sol["tau",],weights=K[a==0])
-    qY0.heatmap = c(qY0.heatmap,temp)
-    
-    ############################################
-    ## add estimates of the marginal quantile ##
-    # delta.q has the quantiles in the rows
-    # !!!!!!!!!!!!!!! I DONT THINK THIS IS DOING WHAT I WANT
-    delta.q[,i] = out$sol["a",findInterval(q.grid,out$sol["tau",])]
-  
-    #######################################
-    # add estimates and PS to the output ##
-    delta.heatmap = c(delta.heatmap,out$sol["a",])
-    ps.heatmap = c(ps.heatmap,rep(grid[i],length(out$sol["a",])))
+      #######################################
+      # add estimates and PS to the output ##
+      delta.heatmap = c(delta.heatmap,out$sol["a",])
+      ps.heatmap = c(ps.heatmap,rep(grid[i],length(out$sol["a",])))
   }
   delta.mean.ub = delta.mean.lb = delta.mean.se = NULL
   if (boot){
@@ -101,7 +115,7 @@ my.localQ <- function(y,a,ps,m=100,m.q=1000,h=0.1,boot=F,K.boot=100){
     delta.mean.se = apply(delta.mean.boot,2,sd)
   }
   # return the fits, the PS grid, the bandwidth, the outcomes , and the treatments
-  return(list(ps=grid,q=q.grid,K.ps=K.ps,h=h,y=y,a=a,q.heatmap=q.heatmap,qY0.heatmap=qY0.heatmap,qY1.heatmap=qY1.heatmap,ps.heatmap=ps.heatmap,delta.heatmap=delta.heatmap,delta.mean=delta.mean,delta.mean.ub=delta.mean.ub,delta.mean.lb=delta.mean.lb,delta.mean.se=delta.mean.se,delta.q=delta.q))
+  return(list(ps=grid,index.ps=index.ps,q=q.grid,K.ps=K.ps,K.ps1=K.ps1,K.ps0=K.ps0,h=h,y=y,a=a,q.heatmap=q.heatmap,qY0.heatmap=qY0.heatmap,qY1.heatmap=qY1.heatmap,ps.heatmap=ps.heatmap,delta.heatmap=delta.heatmap,delta.mean=delta.mean,delta.mean.ub=delta.mean.ub,delta.mean.lb=delta.mean.lb,delta.mean.se=delta.mean.se,delta.q=delta.q))
 }
 
 
@@ -114,17 +128,24 @@ my.localQ <- function(y,a,ps,m=100,m.q=1000,h=0.1,boot=F,K.boot=100){
 ## add option adds plot to previous plot
 ## everything else is passed through to plot
 
-plot.Qmean <- function(fit,add=F,boot=F,...){
+plot.Qmean <- function(fit,add=F,boot=F,ps.dist=F,...){
+  if (ps.dist){
+    layout( rbind(matrix(2,4,5),1) )
+    boxplot(fit$ps~fit$a)
+  }
   if (!boot){
     if (add){
-      lines(y=fit$delta.mean,x=fit$ps,...)
+      index = order(fit$ps)
+      lines(y=fit$delta.mean[index],x=fit$ps[index],...)
     }else{
-      plot(y=fit$delta.mean,x=fit$ps,type='l',...)
+      index = order(fit$ps)
+      plot(y=fit$delta.mean[index],x=fit$ps[index],type='l',...)
     }
   }else{
-    plot(fit$delta.mean,x=fit$ps,type='l',ylim=c(min(fit$delta.mean.lb),max(fit$delta.mean.ub)),...)
-    lines(y=fit$delta.mean.lb,x=fit$ps,lty='dashed',...)
-    lines(y=fit$delta.mean.ub,x=fit$ps,lty='dashed',...)
+    index = order(fit$ps)
+    plot(fit$delta.mean[index],x=fit$ps[index],type='l',ylim=c(min(fit$delta.mean.lb),max(fit$delta.mean.ub)),...)
+    lines(y=fit$delta.mean.lb[index],x=fit$ps[index],lty='dashed',...)
+    lines(y=fit$delta.mean.ub[index],x=fit$ps[index],lty='dashed',...)
   }
 }
 

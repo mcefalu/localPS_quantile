@@ -34,7 +34,7 @@ dta$ps = ps1$ps[,1]
 
 # fit LoWePS-QR
 # h=dpill(x=lalonde$ps, y=lalonde$re78)
-out.sfs <- my.localQ(y=dta$sfs8p12,a=dta$atm,ps=dta$ps,h=0.1,boot=F,K.boot=10)
+out.sfs <- my.localQ(y=dta$sfs8p12,a=dta$atm,ps=dta$ps,h=0.1,boot=F,K.boot=10,m="matt")
 out.sps <- my.localQ(y=dta$spsm12,a=dta$atm,ps=dta$ps,h=0.1)
 out.eps <- my.localQ(y=dta$eps7p12,a=dta$atm,ps=dta$ps,h=0.1)
 out.sds <- my.localQ(y=dta$sdsm12,a=dta$atm,ps=dta$ps,h=0.1)
@@ -46,9 +46,10 @@ save.image("data/results/chesnut_results.Rdata")
 #plot.Qmean(fit=out.sfs , add=F , col='blue' , xlab="PS" , ylab="Effect")
 #plot.Qavg(fit=out.sfs , Ytype="quantile" , type='l' , col='blue' , xlab="quantile of Y(0)" , ylab="Effect")
 
-
-
-
+# estimate marginal effects!
+mean(out.sfs$delta.mean)
+mean(out.sfs$delta.mean[out.sfs$a==1])
+mean(out.sfs$delta.mean[out.sfs$a==0],na.rm=T)
 
 
 
